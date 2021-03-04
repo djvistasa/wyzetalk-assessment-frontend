@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useStoreActions } from 'easy-peasy';
 import { useSnackbar } from 'notistack';
 import { HomeApi } from './api';
@@ -15,9 +15,16 @@ function App() {
   );
   const { enqueueSnackbar } = useSnackbar();
 
+  const location = useLocation();
+  const history = useHistory();
+
   const handleSearch = async (searchTerm) => {
     if (!searchTerm) {
       return saveResultsInStore([]);
+    }
+
+    if (location.pathname !== '/') {
+      history.push('/');
     }
     const { error, ok, result } = await HomeApi.performSearch(searchTerm);
 
