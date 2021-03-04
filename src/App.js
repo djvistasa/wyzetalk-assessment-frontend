@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { useStoreActions } from 'easy-peasy';
+import { useSnackbar } from 'notistack';
+import { HomeApi } from './api';
+
+import Home from './pages/home';
+import ArtistDetail from './pages/artistDetail';
+
+import { NavBar } from './components';
 
 function App() {
+  const saveResultsInStore = useStoreActions(
+    (actions) => actions.searchResults.add,
+  );
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSearch = async (searchTerm) => {
+    if (!searchTerm) {
+      return saveResultsInStore([]);
+    }
+    const { error, ok, result } = await HomeApi.performSearch(searchTerm);
+
+    if (error) {
+      return enqueueSnackbar(error, {
+        variant: 'error',
+      });
+    }
+
+    if (ok && result) {
+      return saveResultsInStore(result);
+    }
+
+    return false;
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <NavBar onSearchTermChange={handleSearch} />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/artist-detail" component={ArtistDetail} />
+      </Switch>
+    </>
   );
 }
 
