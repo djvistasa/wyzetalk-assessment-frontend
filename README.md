@@ -10,3 +10,5 @@ to connect o the BE, you need to change the BASE_URL in src/api/constants to poi
 
 Project makes use of a scaffolding tool called Plop, which works off of the internals folder.
 https://github.com/plopjs/plop
+scaffolding can be used by running yhe following command:
+`yarn generate`
