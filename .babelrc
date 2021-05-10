@@ -6,5 +6,6 @@
         "displayName": true
       }
     ]
-  ]
+  ],
+  "presets": ["@babel/preset-react"]
 }
